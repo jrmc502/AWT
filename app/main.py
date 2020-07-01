@@ -1,12 +1,15 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.image import Image
 import json, glob, random
 from datetime import datetime
 from pathlib import Path
 
 
 Builder.load_file("design.kv")
+
+logo = Image(source='awt_logo.jpeg') 
 
 class LoginScreen(Screen):
     def sign_up(self):
@@ -20,7 +23,8 @@ class LoginScreen(Screen):
         else: 
             self.ids.login_wrong.text = "Wrong username or password!"     
 
-
+class Logo(Image):
+    pass
            
 
 
@@ -32,7 +36,6 @@ class SignUpScreen(Screen):
         with open("users.json") as file: 
             users = json.load(file)
         
-
         users[uname]= {'username': uname, 'password': pword,
         'created':datetime.now().strftime("%Y-%m-%d %H-%M-%S")}
 
