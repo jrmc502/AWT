@@ -1,6 +1,7 @@
 import serial
 from serial.tools.list_ports import comports
 import time
+from statistics import mean
 
 class Connect:
     connection_status = False
@@ -8,6 +9,7 @@ class Connect:
     def __init__(self):
         self.xData = []
         self.yData = []
+        self.ocpData = []
         # Get a list of all connected devices through serial port
         com_devices = comports()
 
@@ -60,15 +62,40 @@ class Connect:
             ## check if the run ends
             if(data_list[0] == '99999'):
                 break
+            
+            ## check if the first output is empty
+            if(len(data_list) != 1):
+                xRead = float(data_list[0])
+                yRead1 = float(data_list[1])/1000
+                yRead2 = float(data_list[2])/1000
+                yRead = yRead1 - yRead2
 
-            xRead = float(data_list[0])
-            yRead1 = float(data_list[1])/1000
-            yRead2 = float(data_list[2])/1000
-            yRead = yRead1 - yRead2
+                mVmin = float(data_list[3])
+                mVmax = float(data_list[4])
 
-            mVmin = float(data_list[3])
-            mVmax = float(data_list[4])
+                # record data
+                self.xData.append(xRead)
+                self.yData.append(yRead)
 
-            # record data
-            self.xData.append(xRead)
-            self.yData.append(yRead)
+    def readOCP(self):
+        # read headers
+        header_line = self.ser.read_until().decode('utf-8')
+        print(header_line)
+
+        while(header_line != '$\r\n'):
+            header_line = self.ser.read_until().decode('utf-8')
+            print(header_line)
+        print('-------------------------')
+
+        ## record actual data
+        data_list = [""]
+        while True:
+            data_line = self.ser.read_until().decode('utf-8')
+            data_list = data_line.split(",")
+            ## check if the run ends
+            if(data_list[0] == '99999'):
+                break
+            
+            ocp_read = float(data_list[0])
+            self.ocpData.append(ocp_read)
+            self.ocp_average = mean(self.ocpData)
