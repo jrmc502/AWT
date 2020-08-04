@@ -62,18 +62,20 @@ class Connect:
             ## check if the run ends
             if(data_list[0] == '99999'):
                 break
+            
+            ## check if the first output is empty
+            if(len(data_list) != 1):
+                xRead = float(data_list[0])
+                yRead1 = float(data_list[1])/1000
+                yRead2 = float(data_list[2])/1000
+                yRead = yRead1 - yRead2
 
-            xRead = float(data_list[0])
-            yRead1 = float(data_list[1])/1000
-            yRead2 = float(data_list[2])/1000
-            yRead = yRead1 - yRead2
+                mVmin = float(data_list[3])
+                mVmax = float(data_list[4])
 
-            mVmin = float(data_list[3])
-            mVmax = float(data_list[4])
-
-            # record data
-            self.xData.append(xRead)
-            self.yData.append(yRead)
+                # record data
+                self.xData.append(xRead)
+                self.yData.append(yRead)
 
     def readOCP(self):
         # read headers

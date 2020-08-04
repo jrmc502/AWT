@@ -11,17 +11,21 @@ import numpy as np
     '''
 
 def main():
-    params = ["&", "9", "-300", "800", "400",
+    params = ["&", "2", "-4508.7", "-4508.7", "400",
             "015", "165", "2", "1", "1", "500", "0"]
     test = Connect()
     test.importParam(params)
-    # test.readData()
-    # plt.plot(test.xData, test.yData, 'ro')
-    # plt.show()
 
-
-    test.readOCP()
-    print(test.ocpData)
-    print(test.ocp_average)
+    mode_num = input("Enter 1 for OCP, 2 for ASV: ")
+    if(mode_num == '1'):
+        test.readOCP()
+        print(test.ocpData)
+        print(test.ocp_average)
+    if(mode_num == '2'):
+        test.readData()
+        plt.plot(test.xData, test.yData, 'r-')
+        plt.title("Potential: {}, Scan Rate: {}, Gain: {}".format(params[3],
+                    params[4], params[5]))
+        plt.show()
 
 main()
